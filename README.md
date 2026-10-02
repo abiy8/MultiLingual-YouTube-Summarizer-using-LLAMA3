@@ -1,106 +1,40 @@
+# Multilingual YouTube Summarizer
 
-# 🌿 YouTube Summarizer with Llama 3 🌿
+A Gradio application that retrieves YouTube captions, summarizes them with a locally hosted Llama 3 model, and optionally translates the result.
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Available Languages](#available-languages)
-- [Customization](#customization)
-- [How It Works](#how-it-works)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
-## Introduction
-The YouTube Summarizer with Llama 3 is a tool that allows users to easily extract information, generate transcriptions, and produce detailed summaries from YouTube videos. By leveraging the power of `LangChain`, `Ollama`, and `pytube`, it supports a wide range of languages to deliver high-quality and multilingual summaries.
+**Stack:** Python · Gradio · LangChain · Ollama / Llama 3 · deep-translator
 
 ## Features
-- Extracts video details (title and description) from YouTube URLs.
-- Transcribes YouTube videos using LangChain's document loaders.
-- Summarizes the transcription using the Llama 3 model.
-- Supports multi-language summaries with automatic translation.
-- Provides a user-friendly UI with custom CSS for a clean, modern look.
-- Adjustable chunk size, overlap size, and temperature settings for better control over text processing.
 
-## Prerequisites
-Before you begin, ensure you have the following installed:
-- Python 3.8 or higher
-- `pip` package manager
-- `Ollama` installed locally and running on `http://localhost:11434`
-- Access to OpenAI models (e.g., `gpt-4`)
+- Retrieve a video's title, description, and available transcript.
+- Split transcripts into configurable chunks.
+- Produce a map-reduce summary with adjustable temperature.
+- Translate the summary using GoogleTranslator.
 
-## Installation
+## Architecture
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/motolomygolda/MultiLingual-YouTube-Summarizer-using-LLAMA3.git
-    cd MultiLingual-YouTube-Summarizer-using-LLAMA3
-    ```
+`YouTube captions → LangChain loader → text chunks → Ollama Llama 3 → combined summary → optional translation → Gradio UI`
 
-2. Install the required Python packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Run locally
 
-3. Ensure Ollama is running on your local machine:
-    - Download and install [Ollama](https://ollama.com).
-    - Run the server using:
-      ```bash
-      ollama start
-      ```
+```bash
+git clone https://github.com/abiy8/MultiLingual-YouTube-Summarizer-using-LLAMA3.git
+cd MultiLingual-YouTube-Summarizer-using-LLAMA3
+python -m venv .venv
+# Activate .venv for your operating system.
+pip install -r requirements.txt
+ollama pull llama3
+ollama serve
+# In another terminal, with the environment active:
+python main.py
+```
 
-## Usage
-1. Run the application:
-    ```bash
-    python main.py
-    ```
-   
-2. Access the UI:
-   - Open your browser and go to `http://localhost:7860`.
-   
-3. How to use the interface:
-   - Enter a YouTube URL in the text box.
-   - Click "Get Info" to fetch the video title and description.
-   - Click "Get Transcription" to extract the transcript and token count.
-   - Adjust settings (e.g., temperature, chunk size, overlap size, language).
-   - Click "Summarize" to generate a summary.
+Open `http://localhost:7860`. If Ollama is already running, skip `ollama serve`. No OpenAI API key is required by this implementation: `tiktoken` uses a GPT-4 tokenizer only to estimate token counts.
 
-## Available Languages
-The summarizer supports the following languages:
-- African Languages: Amharic, Hausa, Kinyarwanda, Somali, Swahili, Tigrinya, Twi, Wolof, Yoruba, Zulu, Oromo.
-- Indian Languages: Bengali, Gujarati, Hindi, Kannada, Malayalam, Marathi, Odia, Punjabi, Tamil, Telugu.
-- European Languages: English, French, German, Greek, Italian, Portuguese, Spanish, Swedish, Dutch, Danish, Finnish, Norwegian, Polish, Romanian, Russian, Ukrainian, Welsh.
-- Asian Languages: Arabic, Chinese (Simplified & Traditional), Hebrew, Japanese, Korean, Persian, Thai, Vietnamese.
-- Others: Filipino, Indonesian, Catalan, Slovak, Slovenian, Croatian, Lithuanian, Latvian, Hungarian, Icelandic, Estonian, Czech, Bulgarian.
+## Limitations
 
-## Customization
-If you want to change the application's look, modify the `custom_css` section in the script to update the background colors, button styles, and other UI elements.
+The application retrieves existing captions; it does not perform speech recognition on videos without captions. YouTube availability, scraping changes, translation limits, and model resources affect results. Summaries may omit or misstate information. Dependencies are unpinned and use older LangChain APIs, so a compatible environment may be needed. `demo.launch(share=True)` requests a public Gradio share link; set `share=False` for local-only use.
 
-## How It Works
-### 1. Extract Video Details
-- Uses `pytube` to fetch the video title.
-- Retrieves the video description using a regex-based approach.
+## Provenance
 
-### 2. Transcription
-- Leverages `LangChain` with the `YoutubeLoader` to extract the full video transcript.
-- Uses `RecursiveCharacterTextSplitter` to split long transcripts into manageable chunks.
-
-### 3. Summarization
-- The `Ollama` Llama 3 model processes the text chunks using a map-reduce approach.
-- Custom prompt templates help generate detailed summaries.
-- Optionally translates the summary using `GoogleTranslator`.
-
-## Contributing
-Contributions are welcome! If you have suggestions or improvements, please create an issue or submit a pull request.
-
-### To Do:
-- [ ] Improve UI with additional animations and design elements.
-- [ ] Add support for more language models.
-- [ ] Optimize the summarization process for longer videos.
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+The previous README referenced [motolomygolda's repository](https://github.com/motolomygolda/MultiLingual-YouTube-Summarizer-using-LLAMA3). That reference is retained here for transparency; this page documents the code in `abiy8`'s repository and does not claim sole original authorship. No license file is included in this checkout, so the previous unverified MIT license claim has been removed.
